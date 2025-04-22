@@ -57,6 +57,10 @@ def index():
                            truncate=truncate,
                            random_product_image_urls=random_product_image_urls,
                            random_price=random.choice(prices))
+@app.route('/debug_users')
+def debug_users():
+    users = User.query.all()
+    return {"users": [{"id": u.id, "username": u.username, "email": u.email} for u in users]}
 
 @app.route("/main")
 def main():
@@ -83,7 +87,7 @@ def signup():
     return render_template('signup.html')
 
 @app.route('/signin', methods=['POST', 'GET'])
-def signin():   
+def signin():
     if request.method == 'POST':
         username = request.form['signinUsername']
         password = request.form['signinPassword']
@@ -125,6 +129,8 @@ def recommendations():
     return render_template('main.html', content_based_rec=None)
 
 if __name__ == '__main__':
+    import os
+    print("Database path:", os.path.abspath("ecom.db"))
     with app.app_context():
         db.create_all()
     app.run(debug=True)
